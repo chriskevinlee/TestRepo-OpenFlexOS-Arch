@@ -18,7 +18,7 @@ chmod +x /etc/openflexos/usr/local/bin/*
 
 
 
-
+ln -s /etc/openflexos/usr/share/applications/OpenFlexOS_Wallpaper.desktop /usr/share/applications/OpenFlexOS_Wallpaper.desktop
 echo "export PATH='/etc/openflexos/usr/local/bin:$PATH'" > /etc/profile.d/custom_paths.sh
 #cp ./OpenFlexOS-Configs/usr/share/applications/OpenFlexOS_Wallpaper.desktop /usr/share/applications/OpenFlexOS_Wallpaper.desktop
 
