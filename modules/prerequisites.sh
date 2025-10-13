@@ -1,33 +1,33 @@
 #!/bin/bash
+clear
 
+read -p "OpenFlexOS has a repository containing all config files. Would you like to use the repository? [y/n]: " yn
+echo "If yes is selected, the OpenFlexOS repository will be added to pacman.conf and you will receive updated configs.
+If no is selected, the configs will be downloaded and copied manually, and you will not receive updates."
 
+case "${yn,,}" in
+  y|yes)
+    if grep -q "^\[openflexos\]" /etc/pacman.conf; then
+      echo "✅ OpenFlexOS repository already exists in pacman.conf — skipping addition."
+    else
+      echo "🛠 Adding OpenFlexOS repository to /etc/pacman.conf..."
+      sudo bash -c 'cat >> /etc/pacman.conf <<EOF
 
+[openflexos]
+SigLevel = Optional TrustAll
+Server = https://chriskevinlee.github.io/TestRepo-OpenFlexOS-Packages/
+EOF'
+      echo "✅ Repository added successfully."
+    fi
 
-
-echo "[openflexos]" >> /etc/pacman.conf
-echo "SigLevel = Optional TrustAll" >> /etc/pacman.conf
-echo "Server = https://chriskevinlee.github.io/TestRepo-OpenFlexOS-Packages/" >> /etc/pacman.conf
-
-pacman -Sy
-
-# ## This script setup any prerequisites before install starts
-
-# # create openflexos directory for all config files to be stored as config files will be sym linked
-# mkdir /etc/openflexos
-# mkdir -p /etc/openflexos/home/users/config/obmenu-generator/
-# mkdir -p /etc/openflexos/home/users/config/wallpapers/wallpaper_cave_nature/
-# mkdir -p /etc/openflexos/usr/local/bin
-
-
-# ######## git clone https://github.com/chriskevinlee/wallpaper_cave_nature.git /etc/openflexos/home/users/config/wallpapers/wallpaper_cave_nature/
-
-# # downloads config files to root of install script. NEED TO ADD SOMETHING TO THE END TO MAKE THIS WORK
-# git clone https://github.com/chriskevinlee/OpenFlexOS-Configs 
-# clear
-
-# # Check to make sure OpenFlexOS-Configs is aviable 
-# if [[ ! -d OpenFlexOS-Configs ]]; then
-#     echo "OpenFlexOS-Configs directory does not exist, Make sure you have OpenFlexOS-Configs in the root of the script $0"
-#     echo "See https://github.com/chriskevinlee/OpenFlexOS-Configs"
-#     exit 0
-# fi
+    echo "🔄 Updating package database..."
+    sudo pacman -Sy
+    ;;
+  n|no)
+    echo "📁 Copying configs manually..."
+    # Add your config copy commands here
+    ;;
+  *)
+    echo "⚠️ Invalid response. Please enter y or n."
+    ;;
+esac
