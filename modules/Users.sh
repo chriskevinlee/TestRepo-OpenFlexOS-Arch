@@ -74,6 +74,12 @@ if [[ $wm_dir == "openbox" ]]; then
         ln -sf /etc/openflexos/usr/local/bin/$openboxscripts "/etc/skel/.config/openbox/scripts/$openboxscripts"
     done
 
+    # Sounds
+    for openboxsounds in {ambient-piano-logo-165357.mp3,cozy-weaves-soft-logo-176378.mp3,error-83494.mp3,game-bonus-144751.mp3,introduction-sound-201413.mp3,lovelyboot1-103697.mp3,machine-error-by-prettysleepy-art-12669.mp3,marimba-win-f-2-209688.mp3,retro-audio-logo-94648.mp3}; do
+        ln -sf /etc/openflexos/home/user/config/sounds/$openboxsounds "/etc/skel/.config/qtile/sounds/$openboxsounds"
+    done
+
+
     # Tint2
     for openboxtint2 in tint2rc; do
         ln -sf /etc/openflexos/home/user/config/openbox/tint2/$openboxtint2 "/etc/skel/.config/openbox/tint2/$openboxtint2"
@@ -173,7 +179,7 @@ if [[ $wm_dir == "qtile" ]]; then
 
     # Sounds
     for qtilesounds in {ambient-piano-logo-165357.mp3,cozy-weaves-soft-logo-176378.mp3,error-83494.mp3,game-bonus-144751.mp3,introduction-sound-201413.mp3,lovelyboot1-103697.mp3,machine-error-by-prettysleepy-art-12669.mp3,marimba-win-f-2-209688.mp3,retro-audio-logo-94648.mp3}; do
-        ln -sf /etc/openflexos/home/user/config/qtile/sounds/$qtilesounds "/etc/skel/.config/qtile/sounds/$qtilesounds"
+        ln -sf /etc/openflexos/home/user/config/sounds/$qtilesounds "/etc/skel/.config/qtile/sounds/$qtilesounds"
     done
 
 
