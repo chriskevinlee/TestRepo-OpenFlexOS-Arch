@@ -15,7 +15,7 @@ Package_List() {
     echo pavucontrol-qt
     echo pipewire-pulse
     echo git
-    echo qt5-graphicaleffects qt5-quickcontrols2 qt5-svg
+    echo qt5-graphicaleffects qt5-quickcontrols2 qt5-svg qt6-multimedia qt6-5compat 
     echo zsh
     echo zsh-history-substring-search
     echo zsh-syntax-highlighting
