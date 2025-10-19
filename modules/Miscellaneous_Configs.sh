@@ -1,7 +1,7 @@
 # systemctl enable sddm
 
 
-ln -s /etc/openflexos/usr/share/sddm/themes/corners /usr/share/sddm/themes/corners
+ln -s /etc/openflexos/usr/share/sddm/themes/openflexos-sddm-theme /usr/share/sddm/themes/openflexos-sddm-theme
 #cp -r ./OpenFlexOS-Configs/usr/share/sddm/themes/corners /usr/share/sddm/themes/corners
 
 
@@ -9,7 +9,7 @@ ln -s /etc/openflexos/usr/share/sddm/themes/corners /usr/share/sddm/themes/corne
 
 
 cp /usr/lib/sddm/sddm.conf.d/default.conf /etc/sddm.conf
-sed -i s/Current=/Current=corners/ /etc/sddm.conf
+sed -i s/Current=/Current=openflexos-sddm-theme/ /etc/sddm.conf
 systemctl enable sddm
 
 #cp -r ./OpenFlexOS-Configs/usr/local/bin/* /etc/openflexos/usr/local/bin/
