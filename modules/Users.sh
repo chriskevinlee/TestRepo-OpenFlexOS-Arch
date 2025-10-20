@@ -32,6 +32,7 @@ config_dirs=(
     "qt6ct"
     "wallpapers/wallpaper_cave_nature"
     "sxiv/exec"
+    "sounds"
     "web_bookmarks"
 )
 
