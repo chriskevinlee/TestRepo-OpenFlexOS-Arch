@@ -32,7 +32,6 @@ config_dirs=(
     "qt6ct"
     "wallpapers/wallpaper_cave_nature"
     "sxiv/exec"
-    "sounds"
     "web_bookmarks"
 )
 
@@ -77,7 +76,7 @@ if [[ $wm_dir == "openbox" ]]; then
 
     # Sounds
     for openboxsounds in {ambient-piano-logo-165357.mp3,cozy-weaves-soft-logo-176378.mp3,error-83494.mp3,game-bonus-144751.mp3,introduction-sound-201413.mp3,lovelyboot1-103697.mp3,machine-error-by-prettysleepy-art-12669.mp3,marimba-win-f-2-209688.mp3,retro-audio-logo-94648.mp3}; do
-        ln -sf /etc/openflexos/home/user/config/sounds/$openboxsounds "/etc/skel/.config/qtile/sounds/$openboxsounds"
+        ln -sf /etc/openflexos/home/user/config/sounds/$openboxsounds "/etc/skel/.config/openbox/sounds/$openboxsounds"
     done
 
 
