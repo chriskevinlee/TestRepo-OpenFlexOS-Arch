@@ -82,7 +82,9 @@ done < <(Package_List)
 # Recheck any failed installs
 while read -r failedpackage; do
   if ! pacman -Q "$failedpackage" &>/dev/null; then
+    clear
     echo "$failedpackage failed to install, retrying..."
-    sudo pacman -S --noconfirm --needed "$failedpackage"
+    pacman -Syy
+    pacman -S --noconfirm --needed "$failedpackage"
   fi
 done < <(Package_List)
