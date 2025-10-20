@@ -88,3 +88,33 @@ while read -r failedpackage; do
     pacman -S --noconfirm --needed "$failedpackage"
   fi
 done < <(Package_List)
+
+### Installing Picom
+cd /tmp
+git clone https://github.com/FT-Labs/picom.git
+cd picom
+meson setup --buildtype=release build
+ninja -C build
+ninja -C build install
+
+
+### Installing nerd-dictation
+#echo "Installing python3-pip..."
+pacman --noconfirm --needed -S python3 xdotool    
+#echo "Cloning nerd-dictation..."
+git clone https://github.com/ideasman42/nerd-dictation.git /opt/nerd-dictation
+cd /opt/nerd-dictation      
+#echo "Creating and activating virtual environment..."
+python3 -m venv vosk-venv
+source vosk-venv/bin/activate
+#echo "Downloading Vosk model..."
+wget -q --show-progress https://alphacephei.com/kaldi/models/vosk-model-small-en-us-0.15.zip
+#echo "Extracting Vosk model..."
+unzip -q vosk-model-small-en-us-0.15.zip
+mv vosk-model-small-en-us-0.15 model      
+#echo "Installing Vosk inside virtual environment..."
+pip install vosk
+
+
+### install ohmyposh
+sudo curl -s https://ohmyposh.dev/install.sh | sudo bash -s -- -d /usr/local/bin
