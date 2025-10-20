@@ -21,7 +21,7 @@ EOF'
     fi
 
     echo "🔄 Updating package database..."
-    sudo pacman -Sy
+    sudo pacman -Syy
     ;;
   n|no)
     echo "📁 Copying configs manually..."
