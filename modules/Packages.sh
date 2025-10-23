@@ -4,6 +4,7 @@ Package_List() {
   cat <<EOF
 openflexos-configs
 openflexos-dmenu
+mousepad
 sddm
 mpv
 xscreensaver
