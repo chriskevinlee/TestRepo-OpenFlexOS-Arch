@@ -46,7 +46,7 @@ if [[ $wm_dir == "openbox" ]]; then
 elif [[ $wm_dir == "qtile" ]]; then
     config_dirs+=(
         "$wm_dir/rofi"
-        "$wm_dir/scripts"
+        "$wm_dir/scripts/menu"
         "$wm_dir/sounds"
         "$wm_dir/systemd"
     )
@@ -171,11 +171,13 @@ if [[ $wm_dir == "qtile" ]]; then
 
 
     # Scripts
-    for qtilescripts in {OpenFlexOS_Applications.sh,OpenFlexOS_BatteryHibernate.sh,OpenFlexOS_Brightness.sh,OpenFlexOS_NerdDictation.sh,OpenFlexOS_Network.sh,OpenFlexOS_Power.sh,OpenFlexOS_Sounds.sh,OpenFlexOS_SSH.sh,OpenFlexOS_UpdateCheck.sh,OpenFlexOS_Volume.sh}; do
+    for qtilescripts in {OpenFlexOS_Applications.sh,OpenFlexOS_BatteryHibernate.sh,OpenFlexOS_Brightness.sh,OpenFlexOS_NerdDictation.sh,OpenFlexOS_Network.sh,OpenFlexOS_Sounds.sh,OpenFlexOS_UpdateCheck.sh,OpenFlexOS_Volume.sh}; do
         ln -sf /etc/openflexos/usr/local/bin/$qtilescripts "/etc/skel/.config/qtile/scripts/$qtilescripts"
     done
 
-
+    for qtilescriptsmenu in {OpenFlexOS_Power.sh,OpenFlexOS_SSH.sh}; do
+        ln -sf /etc/openflexos/usr/local/bin/$qtilescriptsmenu "/etc/skel/.config/qtile/scripts/menu/$qtilescriptsmenu"
+    done
 
     # Sounds
     for qtilesounds in {ambient-piano-logo-165357.mp3,cozy-weaves-soft-logo-176378.mp3,error-83494.mp3,game-bonus-144751.mp3,introduction-sound-201413.mp3,lovelyboot1-103697.mp3,machine-error-by-prettysleepy-art-12669.mp3,marimba-win-f-2-209688.mp3,retro-audio-logo-94648.mp3}; do
