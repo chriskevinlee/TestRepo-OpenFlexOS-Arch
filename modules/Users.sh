@@ -171,7 +171,7 @@ if [[ $wm_dir == "qtile" ]]; then
 
 
     # Scripts
-    for qtilescripts in {OpenFlexOS_Applications.sh,OpenFlexOS_BatteryHibernate.sh,OpenFlexOS_Brightness.sh,OpenFlexOS_NerdDictation.sh,OpenFlexOS_Network.sh,OpenFlexOS_Sounds.sh,OpenFlexOS_UpdateCheck.sh,OpenFlexOS_Volume.sh}; do
+    for qtilescripts in {OpenFlexOS_Applications.sh,OpenFlexOS_BatteryHibernate.sh,OpenFlexOS_Brightness.sh,OpenFlexOS_NerdDictation.sh,OpenFlexOS_Network.sh,OpenFlexOS_Sounds.sh,OpenFlexOS_UpdateCheck.sh,OpenFlexOS_Volume.sh,OpenFlexOS_Menu.sh}; do
         ln -sf /etc/openflexos/usr/local/bin/$qtilescripts "/etc/skel/.config/qtile/scripts/$qtilescripts"
     done
 
