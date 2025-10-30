@@ -176,7 +176,10 @@ if [[ $wm_dir == "qtile" ]]; then
     done
 
     for qtilescriptsmenu in {OpenFlexOS_Power.sh,OpenFlexOS_SSH.sh}; do
-        ln -sf /etc/openflexos/usr/local/bin/$qtilescriptsmenu "/etc/skel/.config/qtile/scripts/menu/$qtilescriptsmenu"
+        clean_name="${qtilescriptsmenu#OpenFlexOS_}"
+    	clean_name="${clean_name%.sh}"
+
+    	ln -sf "/etc/openflexos/usr/local/bin/$qtilescriptsmenu" "/etc/skel/.config/qtile/scripts/menu/$clean_name"
     done
 
     # Sounds
