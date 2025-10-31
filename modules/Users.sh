@@ -171,8 +171,11 @@ if [[ $wm_dir == "qtile" ]]; then
 
 
     # Scripts
-    for qtilescripts in {OpenFlexOS_Applications.sh,OpenFlexOS_BatteryHibernate.sh,OpenFlexOS_Brightness.sh,OpenFlexOS_NerdDictation.sh,OpenFlexOS_Network.sh,OpenFlexOS_Sounds.sh,OpenFlexOS_UpdateCheck.sh,OpenFlexOS_Volume.sh,OpenFlexOS_Menu.sh}; do
-        ln -sf /etc/openflexos/usr/local/bin/$qtilescripts "/etc/skel/.config/qtile/scripts/$qtilescripts"
+    for qtilescripts in /etc/openflexos/usr/local/bin/*; do
+        case "$(basename "$qtilescripts")" in
+           OpenFlexOS_Power.sh|OpenFlexOS_SSH.sh) continue ;;  # skip these files
+        esac
+        ln -sf "$qtilescripts" "/etc/skel/.config/qtile/scripts/$(basename "$qtilescripts")"
     done
 
     for qtilescriptsmenu in {OpenFlexOS_Power.sh,OpenFlexOS_SSH.sh}; do
@@ -182,11 +185,11 @@ if [[ $wm_dir == "qtile" ]]; then
     	ln -sf "/etc/openflexos/usr/local/bin/$qtilescriptsmenu" "/etc/skel/.config/qtile/scripts/menu/$clean_name"
     done
 
-    # Sounds
-    for qtilesounds in {ambient-piano-logo-165357.mp3,cozy-weaves-soft-logo-176378.mp3,error-83494.mp3,game-bonus-144751.mp3,introduction-sound-201413.mp3,lovelyboot1-103697.mp3,machine-error-by-prettysleepy-art-12669.mp3,marimba-win-f-2-209688.mp3,retro-audio-logo-94648.mp3}; do
-        ln -sf /etc/openflexos/home/user/config/sounds/$qtilesounds "/etc/skel/.config/qtile/sounds/$qtilesounds"
-    done
 
+   # Sounds
+   for qtilesounds in /etc/openflexos/home/user/config/sounds/*; do
+       ln -sf "$qtilesounds" "/etc/skel/.config/qtile/sounds/$(basename "$qtilesounds")"
+   done
 
     # Oh My Posh
     for ohmyposh in base.toml; do
