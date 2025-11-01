@@ -173,15 +173,14 @@ if [[ $wm_dir == "qtile" ]]; then
     # Scripts
     for qtilescripts in /etc/openflexos/usr/local/bin/*; do
         case "$(basename "$qtilescripts")" in
-           OpenFlexOS_Power.sh|OpenFlexOS_SSH.sh) continue ;;  # skip these files
+           OpenFlexOS_Power.sh|OpenFlexOS_SSH.sh|OpenFlexOS_WebBookmarker.sh) continue ;;  # skip these files
         esac
         ln -sf "$qtilescripts" "/etc/skel/.config/qtile/scripts/$(basename "$qtilescripts")"
     done
 
-    for qtilescriptsmenu in {OpenFlexOS_Power.sh,OpenFlexOS_SSH.sh}; do
+    for qtilescriptsmenu in {OpenFlexOS_Power.sh,OpenFlexOS_SSH.sh,OpenFlexOS_WebBookmarker.sh}; do
         clean_name="${qtilescriptsmenu#OpenFlexOS_}"
     	clean_name="${clean_name%.sh}"
-
     	ln -sf "/etc/openflexos/usr/local/bin/$qtilescriptsmenu" "/etc/skel/.config/qtile/scripts/menu/$clean_name"
     done
 
