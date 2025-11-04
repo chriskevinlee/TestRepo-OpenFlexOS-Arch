@@ -71,7 +71,6 @@ libev
 uthash
 base-devel
 vim
-gvim
 vim-nerdtree
 EOF
 }
@@ -82,15 +81,7 @@ while read -r package; do
   sudo pacman -S --noconfirm --needed "$package"
 done < <(Package_List)
 
-# Recheck any failed installs
-while read -r failedpackage; do
-  if ! pacman -Q "$failedpackage" &>/dev/null; then
-    clear
-    echo "$failedpackage failed to install, retrying..."
-    pacman -Syy
-    pacman -S --noconfirm --needed "$failedpackage"
-  fi
-done < <(Package_List)
+yes | sudo pacman -S gvim
 
 ### Installing Picom
 cd /tmp
