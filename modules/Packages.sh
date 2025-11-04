@@ -3,7 +3,7 @@
 Package_List() {
   cat <<EOF
 openflexos-configs
-openflexos-dmenu
+dmenu
 mousepad
 sddm
 mpv
