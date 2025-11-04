@@ -70,7 +70,9 @@ libepoxy
 libev
 uthash
 base-devel
+vim
 gvim
+vim-nerdtree
 EOF
 }
 
