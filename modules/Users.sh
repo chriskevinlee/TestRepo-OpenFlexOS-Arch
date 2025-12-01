@@ -64,92 +64,93 @@ done
 # Populate /etc/skel with symlinks
 # -------------------------
 if [[ $wm_dir == "openbox" ]]; then
-    # Main configs
-    for openboxfile in {autostart,menu.xml,snap.sh,environment,rc.xml}; do
-        ln -sf /etc/openflexos/home/user/config/openbox/$openboxfile "/etc/skel/.config/openbox/$openboxfile"
+
+    # Main configs (ALL files)
+    for openboxfile in /etc/openflexos/home/user/config/openbox/*; do
+        ln -sf "$openboxfile" "/etc/skel/.config/openbox/$(basename "$openboxfile")"
     done
 
-    # Scripts
-    for openboxscripts in {OpenFlexOS_Applications.sh,OpenFlexOS_BatteryHibernate.sh,OpenFlexOS_Brightness.sh,OpenFlexOS_NerdDictation.sh,OpenFlexOS_Network.sh,OpenFlexOS_Power.sh,OpenFlexOS_Sounds.sh,OpenFlexOS_SSH.sh,OpenFlexOS_UpdateCheck.sh,OpenFlexOS_Volume.sh}; do
-        ln -sf /etc/openflexos/usr/local/bin/$openboxscripts "/etc/skel/.config/openbox/scripts/$openboxscripts"
+    # Scripts (ALL files)
+    for openboxscripts in /etc/openflexos/usr/local/bin/*; do
+        ln -sf "$openboxscripts" "/etc/skel/.config/openbox/scripts/$(basename "$openboxscripts")"
     done
 
-    # Sounds
-    for openboxsounds in {ambient-piano-logo-165357.mp3,cozy-weaves-soft-logo-176378.mp3,error-83494.mp3,game-bonus-144751.mp3,introduction-sound-201413.mp3,lovelyboot1-103697.mp3,machine-error-by-prettysleepy-art-12669.mp3,marimba-win-f-2-209688.mp3,retro-audio-logo-94648.mp3}; do
-        ln -sf /etc/openflexos/home/user/config/sounds/$openboxsounds "/etc/skel/.config/openbox/sounds/$openboxsounds"
+    # Sounds (ALL files)
+    for openboxsounds in /etc/openflexos/home/user/config/sounds/*; do
+        ln -sf "$openboxsounds" "/etc/skel/.config/openbox/sounds/$(basename "$openboxsounds")"
     done
 
-
-    # Tint2
-    for openboxtint2 in tint2rc; do
-        ln -sf /etc/openflexos/home/user/config/openbox/tint2/$openboxtint2 "/etc/skel/.config/openbox/tint2/$openboxtint2"
+    # Tint2 (ALL files)
+    for openboxtint2 in /etc/openflexos/home/user/config/openbox/tint2/*; do
+        ln -sf "$openboxtint2" "/etc/skel/.config/openbox/tint2/$(basename "$openboxtint2")"
     done
 
-    # Rofi
-    for openboxrofi in {config.rasi,Generate_Rofi_theme.sh,theme.rasi}; do
-        ln -sf /etc/openflexos/home/user/config/openbox/rofi/$openboxrofi "/etc/skel/.config/openbox/rofi/$openboxrofi"
+    # Rofi (ALL files)
+    for openboxrofi in /etc/openflexos/home/user/config/openbox/rofi/*; do
+        ln -sf "$openboxrofi" "/etc/skel/.config/openbox/rofi/$(basename "$openboxrofi")"
     done
 
     # Oh My Posh
-    for ohmyposh in base.toml; do
-        ln -sf /etc/openflexos/home/user/config/ohmyposh/$ohmyposh "/etc/skel/.config/ohmyposh/$ohmyposh"
+    for ohmyposh in /etc/openflexos/home/user/config/ohmyposh/*; do
+        ln -sf "$ohmyposh" "/etc/skel/.config/ohmyposh/$(basename "$ohmyposh")"
     done
 
     # SXIV Key Handler
-    for sxiv in key-handler; do
-        ln -sf /etc/openflexos/home/user/config/sxiv/exec/$sxiv "/etc/skel/.config/sxiv/exec/$sxiv"
+    for sxiv in /etc/openflexos/home/user/config/sxiv/exec/*; do
+        ln -sf "$sxiv" "/etc/skel/.config/sxiv/exec/$(basename "$sxiv")"
     done
 
-    # web_bookmarks
-    for webbookmarks in sites.txt; do
-        ln -sf /etc/openflexos/home/user/config/web_bookmarks/$webbookmarks "/etc/skel/.config/web_bookmarks/$webbookmarks"
+    # Web bookmarks
+    for webbookmarks in /etc/openflexos/home/user/config/web_bookmarks/*; do
+        ln -sf "$webbookmarks" "/etc/skel/.config/web_bookmarks/$(basename "$webbookmarks")"
     done
 
     # Dunst
-    for dunst in dunstrc; do
-        ln -sf /etc/openflexos/home/user/config/dunst/$dunst "/etc/skel/.config/dunst/$dunst"
+    for dunst in /etc/openflexos/home/user/config/dunst/*; do
+        ln -sf "$dunst" "/etc/skel/.config/dunst/$(basename "$dunst")"
     done
 
     # Alacritty
-    for alacritty in alacritty.toml; do
-        ln -sf /etc/openflexos/home/user/config/alacritty/$alacritty "/etc/skel/.config/alacritty/$alacritty"
+    for alacritty in /etc/openflexos/home/user/config/alacritty/*; do
+        ln -sf "$alacritty" "/etc/skel/.config/alacritty/$(basename "$alacritty")"
     done
 
     # GTK 3
-    for gtk3 in gtk.css; do
-        ln -sf /etc/openflexos/home/user/config/gtk-3.0/$gtk3 "/etc/skel/.config/gtk-3.0/$gtk3"
+    for gtk3 in /etc/openflexos/home/user/config/gtk-3.0/*; do
+        ln -sf "$gtk3" "/etc/skel/.config/gtk-3.0/$(basename "$gtk3")"
     done
 
     # GTK 4
-    for gtk4 in gtk.css; do
-        ln -sf /etc/openflexos/home/user/config/gtk-4.0/$gtk4 "/etc/skel/.config/gtk-4.0/$gtk4"
+    for gtk4 in /etc/openflexos/home/user/config/gtk-4.0/*; do
+        ln -sf "$gtk4" "/etc/skel/.config/gtk-4.0/$(basename "$gtk4")"
     done
 
     # MyThemes
-    for mythemes in MyThemes.json; do
-        ln -sf /etc/openflexos/home/user/config/MyThemes/$mythemes "/etc/skel/.config/MyThemes/$mythemes"
+    for mythemes in /etc/openflexos/home/user/config/MyThemes/*; do
+        ln -sf "$mythemes" "/etc/skel/.config/MyThemes/$(basename "$mythemes")"
     done
 
     # Picom
-    for picom in picom.conf; do
-        ln -sf /etc/openflexos/home/user/config/picom/$picom "/etc/skel/.config/picom/$picom"
+    for picom in /etc/openflexos/home/user/config/picom/*; do
+        ln -sf "$picom" "/etc/skel/.config/picom/$(basename "$picom")"
     done
 
     # Qt5
-    for qt5 in qt5.conf; do
-        ln -sf /etc/openflexos/home/user/config/qt5ct/$qt5 "/etc/skel/.config/qt5ct/$qt5"
+    for qt5 in /etc/openflexos/home/user/config/qt5ct/*; do
+        ln -sf "$qt5" "/etc/skel/.config/qt5ct/$(basename "$qt5")"
     done
 
     # Qt6
-    for qt6 in qt6.conf; do
-        ln -sf /etc/openflexos/home/user/config/qt6ct/$qt6 "/etc/skel/.config/qt6ct/$qt6"
+    for qt6 in /etc/openflexos/home/user/config/qt6ct/*; do
+        ln -sf "$qt6" "/etc/skel/.config/qt6ct/$(basename "$qt6")"
     done
 
-    # Dotfiles
-    for userhomedots in {dot.bashrc,dot.gtkrc-2.0,dot.zshrc,dot.xscreensaver}; do
-        ln -sf /etc/openflexos/home/user/$userhomedots "/etc/skel/.${userhomedots#dot.}"
+    # Dotfiles (ALL dot.* files)
+    for userhomedots in /etc/openflexos/home/user/dot.*; do
+        ln -sf "$userhomedots" "/etc/skel/.${userhomedots#*.}"
     done
 
+    # Wallpapers
     for wallpapers in /etc/openflexos/home/user/config/wallpapers/wallpaper_cave_nature/*; do
         ln -sf "$wallpapers" "/etc/skel/.config/wallpapers/wallpaper_cave_nature/$(basename "$wallpapers")"
     done
@@ -157,18 +158,17 @@ fi
 
 if [[ $wm_dir == "qtile" ]]; then
 
-
-    for qtileconfig in {config.py,OpenFlexOS_AutoStart.sh}; do
-        ln -sf /etc/openflexos/home/user/config/qtile/$qtileconfig "/etc/skel/.config/qtile/$qtileconfig"
+    # Qtile main config (ALL files)
+    for qtileconfig in /etc/openflexos/home/user/config/qtile/*; do
+        ln -sf "$qtileconfig" "/etc/skel/.config/qtile/$(basename "$qtileconfig")"
     done
-
-
 
     # Rofi
-    for qtilerofi in {config.rasi,Generate_Rofi_theme.sh,theme.rasi}; do
-        ln -sf /etc/openflexos/home/user/config/qtile/rofi/$qtilerofi "/etc/skel/.config/qtile/rofi/$qtilerofi"
+    for qtilerofi in /etc/openflexos/home/user/config/qtile/rofi/*; do
+        ln -sf "$qtilerofi" "/etc/skel/.config/qtile/rofi/$(basename "$qtilerofi")"
     done
 
+<<<<<<< HEAD
 
     # Scripts
     for qtilescripts in /etc/openflexos/usr/local/bin/*; do
@@ -243,20 +243,51 @@ if [[ $wm_dir == "qtile" ]]; then
     # Qt6
     for qt6 in qt6.conf; do
         ln -sf /etc/openflexos/home/user/config/qt6ct/$qt6 "/etc/skel/.config/qt6ct/$qt6"
+=======
+    # Scripts (exclude menu-only ones)
+    for qtilescripts in /etc/openflexos/usr/local/bin/*; do
+        case "$(basename "$qtilescripts")" in
+            OpenFlexOS_Power.sh|OpenFlexOS_SSH.sh|OpenFlexOS_WebBookmarker.sh)
+                continue
+            ;;
+        esac
+        ln -sf "$qtilescripts" "/etc/skel/.config/qtile/scripts/$(basename "$qtilescripts")"
+    done
+
+    # Menu scripts
+    for qtilescriptsmenu in OpenFlexOS_Power.sh OpenFlexOS_SSH.sh OpenFlexOS_WebBookmarker.sh; do
+        clean_name="${qtilescriptsmenu#OpenFlexOS_}"
+        clean_name="${clean_name%.sh}"
+        ln -sf "/etc/openflexos/usr/local/bin/$qtilescriptsmenu" \
+               "/etc/skel/.config/qtile/scripts/menu/$clean_name"
+    done
+
+    # Sounds
+    for qtilesounds in /etc/openflexos/home/user/config/sounds/*; do
+        ln -sf "$qtilesounds" "/etc/skel/.config/qtile/sounds/$(basename "$qtilesounds")"
+    done
+
+    # Shared configs
+    for dir in ohmyposh sxiv/exec web_bookmarks dunst alacritty gtk-3.0 gtk-4.0 MyThemes picom qt5ct qt6ct; do
+        for file in /etc/openflexos/home/user/config/$dir/*; do
+            ln -sf "$file" "/etc/skel/.config/$dir/$(basename "$file")"
+        done
+>>>>>>> 44b6b0a (updated ln links to use all (*))
     done
 
     # Dotfiles
-    for userhomedots in {dot.bashrc,dot.gtkrc-2.0,dot.zshrc,dot.xscreensaver}; do
-        ln -sf /etc/openflexos/home/user/$userhomedots "/etc/skel/.${userhomedots#dot.}"
+    for userhomedots in /etc/openflexos/home/user/dot.*; do
+        ln -sf "$userhomedots" "/etc/skel/.${userhomedots#*.}"
     done
 
+    # Wallpapers
     for wallpapers in /etc/openflexos/home/user/config/wallpapers/wallpaper_cave_nature/*; do
         ln -sf "$wallpapers" "/etc/skel/.config/wallpapers/wallpaper_cave_nature/$(basename "$wallpapers")"
     done
-
 fi
 
 echo ">> /etc/skel prepared with symlinks for $wm_dir"
+
 
 
 # -------------------------
