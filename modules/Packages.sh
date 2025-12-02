@@ -75,6 +75,7 @@ vim-nerdtree
 powerline-fonts 
 awesome-terminal-fonts 
 nerd-fonts
+lxappearance
 EOF
 }
 
@@ -138,11 +139,6 @@ userdel -r "$BUILD_USER" 2>/dev/null || true
 
 echo "[✓] qtile-extras installed successfully."
 
-
-
-
-
-
 # Install all
 while read -r package; do
   sudo pacman -S --noconfirm --needed "$package"
@@ -157,7 +153,6 @@ cd picom
 meson setup --buildtype=release build
 ninja -C build
 ninja -C build install
-
 
 ### Installing nerd-dictation
 #echo "Installing python3-pip..."
@@ -176,6 +171,8 @@ mv vosk-model-small-en-us-0.15 model
 #echo "Installing Vosk inside virtual environment..."
 pip install vosk
 
-
 ### install ohmyposh
 sudo curl -s https://ohmyposh.dev/install.sh | sudo bash -s -- -d /usr/local/bin
+
+git clone https://github.com/L4ki/Viola-Plasma-Themes /tmp/Viola-Plasma-Themes
+cp -r "/tmp/Viola-Plasma-Themes/Viola GTK Themes/Viola-Dark-GTK" /usr/share/themes
