@@ -168,82 +168,6 @@ if [[ $wm_dir == "qtile" ]]; then
         ln -sf "$qtilerofi" "/etc/skel/.config/qtile/rofi/$(basename "$qtilerofi")"
     done
 
-<<<<<<< HEAD
-
-    # Scripts
-    for qtilescripts in /etc/openflexos/usr/local/bin/*; do
-        case "$(basename "$qtilescripts")" in
-           OpenFlexOS_Power.sh|OpenFlexOS_SSH.sh|OpenFlexOS_WebBookmarker.sh) continue ;;  # skip these files
-        esac
-        ln -sf "$qtilescripts" "/etc/skel/.config/qtile/scripts/$(basename "$qtilescripts")"
-    done
-
-    for qtilescriptsmenu in {OpenFlexOS_Power.sh,OpenFlexOS_SSH.sh,OpenFlexOS_WebBookmarker.sh}; do
-        clean_name="${qtilescriptsmenu#OpenFlexOS_}"
-    	clean_name="${clean_name%.sh}"
-    	ln -sf "/etc/openflexos/usr/local/bin/$qtilescriptsmenu" "/etc/skel/.config/qtile/scripts/menu/$clean_name"
-    done
-
-
-   # Sounds
-   for qtilesounds in /etc/openflexos/home/user/config/sounds/*; do
-       ln -sf "$qtilesounds" "/etc/skel/.config/qtile/sounds/$(basename "$qtilesounds")"
-   done
-
-    # Oh My Posh
-    for ohmyposh in base.toml; do
-        ln -sf /etc/openflexos/home/user/config/ohmyposh/$ohmyposh "/etc/skel/.config/ohmyposh/$ohmyposh"
-    done
-
-    # SXIV Key Handler
-    for sxiv in key-handler; do
-        ln -sf /etc/openflexos/home/user/config/sxiv/exec/$sxiv "/etc/skel/.config/sxiv/exec/$sxiv"
-    done
-
-    # web_bookmarks
-    for webbookmarks in sites.txt; do
-        ln -sf /etc/openflexos/home/user/config/web_bookmarks/$webbookmarks "/etc/skel/.config/web_bookmarks/$webbookmarks"
-    done
-
-    # Dunst
-    for dunst in dunstrc; do
-        ln -sf /etc/openflexos/home/user/config/dunst/$dunst "/etc/skel/.config/dunst/$dunst"
-    done
-
-    # Alacritty
-    for alacritty in alacritty.toml; do
-        ln -sf /etc/openflexos/home/user/config/alacritty/$alacritty "/etc/skel/.config/alacritty/$alacritty"
-    done
-
-    # GTK 3
-    for gtk3 in gtk.css; do
-        ln -sf /etc/openflexos/home/user/config/gtk-3.0/$gtk3 "/etc/skel/.config/gtk-3.0/$gtk3"
-    done
-
-    # GTK 4
-    for gtk4 in gtk.css; do
-        ln -sf /etc/openflexos/home/user/config/gtk-4.0/$gtk4 "/etc/skel/.config/gtk-4.0/$gtk4"
-    done
-
-    # MyThemes
-    for mythemes in MyThemes.json; do
-        ln -sf /etc/openflexos/home/user/config/MyThemes/$mythemes "/etc/skel/.config/MyThemes/$mythemes"
-    done
-
-    # Picom
-    for picom in picom.conf; do
-        ln -sf /etc/openflexos/home/user/config/picom/$picom "/etc/skel/.config/picom/$picom"
-    done
-
-    # Qt5
-    for qt5 in qt5.conf; do
-        ln -sf /etc/openflexos/home/user/config/qt5ct/$qt5 "/etc/skel/.config/qt5ct/$qt5"
-    done
-
-    # Qt6
-    for qt6 in qt6.conf; do
-        ln -sf /etc/openflexos/home/user/config/qt6ct/$qt6 "/etc/skel/.config/qt6ct/$qt6"
-=======
     # Scripts (exclude menu-only ones)
     for qtilescripts in /etc/openflexos/usr/local/bin/*; do
         case "$(basename "$qtilescripts")" in
@@ -272,7 +196,6 @@ if [[ $wm_dir == "qtile" ]]; then
         for file in /etc/openflexos/home/user/config/$dir/*; do
             ln -sf "$file" "/etc/skel/.config/$dir/$(basename "$file")"
         done
->>>>>>> 44b6b0a (updated ln links to use all (*))
     done
 
     # Dotfiles
@@ -287,8 +210,6 @@ if [[ $wm_dir == "qtile" ]]; then
 fi
 
 echo ">> /etc/skel prepared with symlinks for $wm_dir"
-
-
 
 # -------------------------
 # Main loop
