@@ -198,6 +198,11 @@ if [[ $wm_dir == "qtile" ]]; then
         done
     done
 
+    for file in themes.json dmenu_theme.conf; do
+    ln -sf "/etc/openflexos/home/user/config/$file" \
+           "/etc/skel/.config/$file"
+    done
+
     # Dotfiles
     for userhomedots in /etc/openflexos/home/user/dot.*; do
         ln -sf "$userhomedots" "/etc/skel/.${userhomedots#*.}"
