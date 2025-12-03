@@ -7,6 +7,7 @@ dmenu
 mousepad
 sddm
 mpv
+xclip
 xscreensaver
 feh
 rofi
