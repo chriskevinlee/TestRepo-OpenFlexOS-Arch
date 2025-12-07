@@ -171,7 +171,7 @@ if [[ $wm_dir == "qtile" ]]; then
     # Scripts (exclude menu-only ones)
     for qtilescripts in /etc/openflexos/usr/local/bin/*; do
         case "$(basename "$qtilescripts")" in
-            OpenFlexOS_Power.sh|OpenFlexOS_SSH.sh|OpenFlexOS_WebBookmarker.sh)
+            OpenFlexOS_Power.sh|OpenFlexOS_SSH.sh|OpenFlexOS_WebBookmarker.sh|UpdateTheme)
                 continue
             ;;
         esac
