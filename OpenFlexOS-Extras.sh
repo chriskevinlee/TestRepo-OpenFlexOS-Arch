@@ -89,7 +89,7 @@ select app in "${packages[@]}"; do
 
         ;;
     "AnyDesk")
-        PKG=anydesk-vin
+        PKG=anydesk-bin
         BUILD_USER=_aurbuilder
         BUILD_HOME=/tmp/${BUILD_USER}-home
         BUILD_DIR=/tmp/${PKG}-build
