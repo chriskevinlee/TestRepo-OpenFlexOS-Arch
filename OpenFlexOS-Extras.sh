@@ -89,62 +89,57 @@ select app in "${packages[@]}"; do
 
         ;;
     "AnyDesk")
-        PKG=anydesk-bin
-        BUILD_USER=_aurbuilder
-        BUILD_HOME=/tmp/${BUILD_USER}-home
-        BUILD_DIR=/tmp/${PKG}-build
+    
 
+            BUILD_USER=_aurbuilder
+            BUILD_HOME=/tmp/${BUILD_USER}-home
 
-        echo "[+] Installing base tools..."
-        sudo pacman -Sy --noconfirm --needed git base-devel
+            # ---- Base tools ----
+            sudo pacman -S --noconfirm --needed git base-devel
 
-        # Create temporary build user
-        if ! id "$BUILD_USER" &>/dev/null; then
-            echo "[+] Creating temporary build user ($BUILD_USER)"
-            sudo useradd -r -m -d "$BUILD_HOME" -s /bin/bash "$BUILD_USER"
-        fi
+            # ---- Build user ----
+            if ! id "$BUILD_USER" &>/dev/null; then
+                sudo useradd -r -m -d "$BUILD_HOME" -s /bin/bash "$BUILD_USER"
+            fi
 
-        # Give that user password-less pacman rights just for building
-        # (makepkg uses sudo pacman -S to pull missing deps)
-        echo "[+] Temporarily allowing $BUILD_USER to run pacman without password..."
-        echo "$BUILD_USER ALL=(ALL) NOPASSWD: /usr/bin/pacman" | sudo tee /etc/sudoers.d/$BUILD_USER > /dev/null
-        sudo chmod 440 /etc/sudoers.d/$BUILD_USER
+            # ---- Allow pacman ----
+            echo "$BUILD_USER ALL=(ALL) NOPASSWD: /usr/bin/pacman" \
+              | sudo tee /etc/sudoers.d/$BUILD_USER > /dev/null
+            sudo chmod 440 /etc/sudoers.d/$BUILD_USER
 
-        # Prepare build directory
-        sudo rm -rf "$BUILD_DIR"
-        sudo mkdir -p "$BUILD_DIR"
-        sudo chown -R "$BUILD_USER":"$BUILD_USER" "$BUILD_DIR" "$BUILD_HOME"
+            # ---- Function ----
+            build_aur_pkg() {
+                local PKG="$1"
+                local BUILD_DIR="/tmp/${PKG}-build"
 
-        echo "[+] Cloning AUR repo..."
-        sudo -u "$BUILD_USER" bash -c "
-            cd '$BUILD_DIR'
-            git clone https://aur.archlinux.org/${PKG}.git . >/dev/null 2>&1 || true
-            git pull --ff-only || true
-        "
+                echo "[+] Building AUR package: $PKG"
 
-        echo "[+] Building package..."
-        sudo -u "$BUILD_USER" bash -c "
-            cd '$BUILD_DIR'
-            export HOME='$BUILD_HOME'
+                sudo rm -rf "$BUILD_DIR"
+                sudo mkdir -p "$BUILD_DIR"
+                sudo chown -R "$BUILD_USER:$BUILD_USER" "$BUILD_DIR" "$BUILD_HOME"
+
+                sudo -u "$BUILD_USER" bash <<EOF
+            set -e
+            cd "$BUILD_DIR"
+            git clone https://aur.archlinux.org/${PKG}.git .
+            export HOME="$BUILD_HOME"
             makepkg -s --noconfirm --skippgpcheck
-        "
+            EOF
 
-        # Find the built package
-        PKGFILE=$(find "$BUILD_DIR" -maxdepth 1 -type f -name "${PKG}-*.pkg.tar.*" | sort -V | tail -n1)
-        if [[ -z "$PKGFILE" ]]; then
-            echo "[-] Build failed: no package produced."
-            sudo rm -f /etc/sudoers.d/$BUILD_USER
-            sudo userdel -r "$BUILD_USER" 2>/dev/null || true
-            exit 1
-        fi
+                PKGFILES=$(find "$BUILD_DIR" -maxdepth 1 -name "${PKG}-*.pkg.tar.*")
 
-        echo "[+] Installing ${PKGFILE}..."
-        sudo pacman -U --noconfirm "$PKGFILE"
+                if [[ -z "$PKGFILES" ]]; then
+                    echo "[-] Failed to build $PKG"
+                    exit 1
+                fi
 
-        echo "[+] Cleaning up temporary files and user..."
-        sudo rm -rf "$BUILD_DIR" "$BUILD_HOME"
-        sudo rm -f /etc/sudoers.d/$BUILD_USER
-        sudo userdel -r "$BUILD_USER" 2>/dev/null || true
+                sudo pacman -U --noconfirm $PKGFILES
+            }
+
+            # ---- Install order ----
+            build_aur_pkg yp-tools
+            build_aur_pkg anydesk-bin
+
 
         ;;
         *)
