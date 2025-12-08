@@ -90,55 +90,57 @@ select app in "${packages[@]}"; do
         ;;
     "AnyDesk")
     
+BUILD_USER=_aurbuilder
+BUILD_HOME=/tmp/${BUILD_USER}-home
 
-            BUILD_USER=_aurbuilder
-            BUILD_HOME=/tmp/${BUILD_USER}-home
+# ---- Base tools ----
+sudo pacman -S --noconfirm --needed git base-devel
 
-            # ---- Base tools ----
-            sudo pacman -S --noconfirm --needed git base-devel
+# ---- Build user ----
+if ! id "$BUILD_USER" &>/dev/null; then
+    sudo useradd -r -m -d "$BUILD_HOME" -s /bin/bash "$BUILD_USER"
+fi
 
-            # ---- Build user ----
-            if ! id "$BUILD_USER" &>/dev/null; then
-                sudo useradd -r -m -d "$BUILD_HOME" -s /bin/bash "$BUILD_USER"
-            fi
+# ---- Allow pacman ----
+echo "$BUILD_USER ALL=(ALL) NOPASSWD: /usr/bin/pacman" \
+  | sudo tee /etc/sudoers.d/$BUILD_USER > /dev/null
+sudo chmod 440 /etc/sudoers.d/$BUILD_USER
 
-            # ---- Allow pacman ----
-            echo "$BUILD_USER ALL=(ALL) NOPASSWD: /usr/bin/pacman" \
-              | sudo tee /etc/sudoers.d/$BUILD_USER > /dev/null
-            sudo chmod 440 /etc/sudoers.d/$BUILD_USER
+# ---- Function ----
+build_aur_pkg() {
+    local PKG="$1"
+    local BUILD_DIR="/tmp/${PKG}-build"
 
-            # ---- Function ----
-            build_aur_pkg() {
-                local PKG="$1"
-                local BUILD_DIR="/tmp/${PKG}-build"
+    echo "[+] Building AUR package: $PKG"
 
-                echo "[+] Building AUR package: $PKG"
+    sudo rm -rf "$BUILD_DIR"
+    sudo mkdir -p "$BUILD_DIR"
+    sudo chown -R "$BUILD_USER:$BUILD_USER" "$BUILD_DIR" "$BUILD_HOME"
 
-                sudo rm -rf "$BUILD_DIR"
-                sudo mkdir -p "$BUILD_DIR"
-                sudo chown -R "$BUILD_USER:$BUILD_USER" "$BUILD_DIR" "$BUILD_HOME"
 
-                sudo -u "$BUILD_USER" bash <<EOF
-            set -e
-            cd "$BUILD_DIR"
-            git clone https://aur.archlinux.org/${PKG}.git .
-            export HOME="$BUILD_HOME"
-            makepkg -s --noconfirm --skippgpcheck
-            EOF
+    sudo -u "$BUILD_USER" bash -c "
+      set -e
+      cd \"$BUILD_DIR\"
+      git clone https://aur.archlinux.org/${PKG}.git .
+      export HOME=\"$BUILD_HOME\"
+      makepkg -s --noconfirm --skippgpcheck
+    "
 
-                PKGFILES=$(find "$BUILD_DIR" -maxdepth 1 -name "${PKG}-*.pkg.tar.*")
 
-                if [[ -z "$PKGFILES" ]]; then
-                    echo "[-] Failed to build $PKG"
-                    exit 1
-                fi
 
-                sudo pacman -U --noconfirm $PKGFILES
-            }
+    PKGFILES=$(find "$BUILD_DIR" -maxdepth 1 -name "${PKG}-*.pkg.tar.*")
 
-            # ---- Install order ----
-            build_aur_pkg yp-tools
-            build_aur_pkg anydesk-bin
+    if [[ -z "$PKGFILES" ]]; then
+        echo "[-] Failed to build $PKG"
+        exit 1
+    fi
+
+    sudo pacman -U --noconfirm $PKGFILES
+}
+
+# ---- Install order ----
+build_aur_pkg yp-tools
+build_aur_pkg anydesk-bin
 
 
         ;;
