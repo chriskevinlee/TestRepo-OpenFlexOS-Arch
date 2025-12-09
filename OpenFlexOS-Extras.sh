@@ -1,4 +1,4 @@
-packages=("VirtualBox" "VLC" "FileZilla" "GIMP" "Gparted" "KDE Connect" "qBittorrent" "Audacity" "Brave" "AnyDesk" "NoMachine")
+packages=("VirtualBox" "VLC" "FileZilla" "GIMP" "Gparted" "KDE Connect" "qBittorrent" "Audacity" "Brave(AUR)" "AnyDesk(AUR)" "NoMachine(AUR)")
 PS3="Please choose an option (1-${#packages[@]}): "
 echo "Please Choose a package to install"
 
@@ -29,7 +29,7 @@ select app in "${packages[@]}"; do
         "Audacity")
         sudo pacman -S --noconfirm audacity
             ;;
-        "Brave")
+        "Brave(AUR)")
         PKG=brave-bin
         BUILD_USER=_aurbuilder
         BUILD_HOME=/tmp/${BUILD_USER}-home
@@ -88,7 +88,7 @@ select app in "${packages[@]}"; do
         sudo userdel -r "$BUILD_USER" 2>/dev/null || true
 
         ;;
-        "AnyDesk")
+        "AnyDesk(AUR)")
             BUILD_USER=_aurbuilder
             BUILD_HOME=/tmp/${BUILD_USER}-home
 
@@ -139,7 +139,7 @@ select app in "${packages[@]}"; do
             build_aur_pkg yp-tools
             build_aur_pkg anydesk-bin
         ;;
-        "NoMachine")
+        "NoMachine()AUR")
             PKG=nomachine
             BUILD_USER=_aurbuilder
             BUILD_HOME=/tmp/${BUILD_USER}-home
