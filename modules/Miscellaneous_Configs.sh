@@ -18,6 +18,7 @@ mkinitcpio -P
 sed -i "s|GRUB_CMDLINE_LINUX=\"\"|GRUB_CMDLINE_LINUX=\"resume=$SWAP_DEVICE\"|" /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 
+sed -i '$a # Preserve HOME when running vim via sudo\nDefaults!/usr/bin/vim env_keep += "HOME"' /etc/sudoers
 sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 sed -i  's|SHELL=/usr/bin/bash|SHELL=/usr/bin/zsh|' /etc/default/useradd
 sed -i 's/#Color/Color/' /etc/pacman.conf
