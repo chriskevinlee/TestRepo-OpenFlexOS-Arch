@@ -1,4 +1,61 @@
-packages=("VirtualBox" "VLC" "FileZilla" "GIMP" "Gparted" "KDE Connect" "qBittorrent" "Audacity" "Brave(AUR)" "AnyDesk(AUR)" "NoMachine(AUR)")
+# -------------------- AUR BUILDER COMMON SETUP --------------------
+BUILD_USER=_aurbuilder
+BUILD_HOME=/tmp/${BUILD_USER}-home
+
+ensure_aur_builder() {
+    sudo pacman -Sy --noconfirm --needed git base-devel
+
+    if ! id "$BUILD_USER" &>/dev/null; then
+        echo "[+] Creating AUR build user"
+        sudo useradd -r -m -d "$BUILD_HOME" -s /bin/bash "$BUILD_USER"
+    fi
+
+    if [[ ! -f /etc/sudoers.d/$BUILD_USER ]]; then
+        echo "[+] Allowing $BUILD_USER to use pacman"
+        echo "$BUILD_USER ALL=(ALL) NOPASSWD: /usr/bin/pacman" \
+            | sudo tee /etc/sudoers.d/$BUILD_USER > /dev/null
+        sudo chmod 440 /etc/sudoers.d/$BUILD_USER
+    fi
+}
+
+build_aur_pkg() {
+    local PKG="$1"
+    local MAKEPKG_OPTS="${2:---noconfirm --skippgpcheck}"
+    local BUILD_DIR="/tmp/${PKG}-build"
+
+    echo "[+] Building AUR package: $PKG"
+
+    sudo rm -rf "$BUILD_DIR"
+    sudo mkdir -p "$BUILD_DIR"
+    sudo chown -R "$BUILD_USER:$BUILD_USER" "$BUILD_DIR" "$BUILD_HOME"
+
+    sudo -u "$BUILD_USER" env HOME="$BUILD_HOME" bash <<EOF
+set -e
+cd "$BUILD_DIR"
+git clone https://aur.archlinux.org/${PKG}.git .
+makepkg -s $MAKEPKG_OPTS
+EOF
+
+    # ✅ install all non-debug split packages
+    PKGFILES=$(find "$BUILD_DIR" -maxdepth 1 -name "*.pkg.tar.*" ! -name "*-debug-*" | sort -V)
+
+    if [[ -z "$PKGFILES" ]]; then
+        echo "[-] Failed to build $PKG"
+        exit 1
+    fi
+
+    sudo pacman -U --noconfirm $PKGFILES
+}
+
+cleanup_aur_builder() {
+    echo "[+] Cleaning up AUR build user"
+    sudo rm -rf /tmp/*-build "$BUILD_HOME"
+    sudo rm -f /etc/sudoers.d/$BUILD_USER
+    sudo userdel -r "$BUILD_USER" 2>/dev/null || true
+}
+
+
+packages=("VirtualBox" "VLC" "FileZilla" "GIMP" "Gparted" "KDE Connect" "qBittorrent" "Audacity" "Brave(AUR)" "AnyDesk(AUR)" "NoMachine(AUR)" "Sublime-Text(AUR)")
 PS3="Please choose an option (1-${#packages[@]}): "
 echo "Please Choose a package to install"
 
@@ -30,187 +87,38 @@ select app in "${packages[@]}"; do
         sudo pacman -S --noconfirm audacity
             ;;
         "Brave(AUR)")
-        PKG=brave-bin
-        BUILD_USER=_aurbuilder
-        BUILD_HOME=/tmp/${BUILD_USER}-home
-        BUILD_DIR=/tmp/${PKG}-build
-
-
-        echo "[+] Installing base tools..."
-        sudo pacman -Sy --noconfirm --needed git base-devel
-
-        # Create temporary build user
-        if ! id "$BUILD_USER" &>/dev/null; then
-            echo "[+] Creating temporary build user ($BUILD_USER)"
-            sudo useradd -r -m -d "$BUILD_HOME" -s /bin/bash "$BUILD_USER"
-        fi
-
-        # Give that user password-less pacman rights just for building
-        # (makepkg uses sudo pacman -S to pull missing deps)
-        echo "[+] Temporarily allowing $BUILD_USER to run pacman without password..."
-        echo "$BUILD_USER ALL=(ALL) NOPASSWD: /usr/bin/pacman" | sudo tee /etc/sudoers.d/$BUILD_USER > /dev/null
-        sudo chmod 440 /etc/sudoers.d/$BUILD_USER
-
-        # Prepare build directory
-        sudo rm -rf "$BUILD_DIR"
-        sudo mkdir -p "$BUILD_DIR"
-        sudo chown -R "$BUILD_USER":"$BUILD_USER" "$BUILD_DIR" "$BUILD_HOME"
-
-        echo "[+] Cloning AUR repo..."
-        sudo -u "$BUILD_USER" bash -c "
-            cd '$BUILD_DIR'
-            git clone https://aur.archlinux.org/${PKG}.git . >/dev/null 2>&1 || true
-            git pull --ff-only || true
-        "
-
-        echo "[+] Building package..."
-        sudo -u "$BUILD_USER" bash -c "
-            cd '$BUILD_DIR'
-            export HOME='$BUILD_HOME'
-            makepkg -s --noconfirm --skippgpcheck
-        "
-
-        # Find the built package
-        PKGFILE=$(find "$BUILD_DIR" -maxdepth 1 -type f -name "${PKG}-*.pkg.tar.*" | sort -V | tail -n1)
-        if [[ -z "$PKGFILE" ]]; then
-            echo "[-] Build failed: no package produced."
-            sudo rm -f /etc/sudoers.d/$BUILD_USER
-            sudo userdel -r "$BUILD_USER" 2>/dev/null || true
-            exit 1
-        fi
-
-        echo "[+] Installing ${PKGFILE}..."
-        sudo pacman -U --noconfirm "$PKGFILE"
-
-        echo "[+] Cleaning up temporary files and user..."
-        sudo rm -rf "$BUILD_DIR" "$BUILD_HOME"
-        sudo rm -f /etc/sudoers.d/$BUILD_USER
-        sudo userdel -r "$BUILD_USER" 2>/dev/null || true
-
+        ensure_aur_builder
+        build_aur_pkg brave-bin
+        cleanup_aur_builder
         ;;
         "AnyDesk(AUR)")
-            BUILD_USER=_aurbuilder
-            BUILD_HOME=/tmp/${BUILD_USER}-home
+        ensure_aur_builder
+        build_aur_pkg yp-tools
+        build_aur_pkg anydesk-bin
+        cleanup_aur_builder
+    ;;
+        "NoMachine(AUR)")
+        ensure_aur_builder
+        build_aur_pkg nomachine "--noconfirm"
 
-            # ---- Base tools ----
-            sudo pacman -S --noconfirm --needed git base-devel
+        # ---- NoMachine config ----
+        NXCFG="/usr/NX/etc/server.cfg"
 
-            # ---- Build user ----
-            if ! id "$BUILD_USER" &>/dev/null; then
-                sudo useradd -r -m -d "$BUILD_HOME" -s /bin/bash "$BUILD_USER"
-            fi
+        if ! grep -q '^# Enforced by install script' "$NXCFG"; then
+            sudo cp "$NXCFG" "$NXCFG.bak"
 
-            # ---- Allow pacman ----
-            echo "$BUILD_USER ALL=(ALL) NOPASSWD: /usr/bin/pacman" \
-              | sudo tee /etc/sudoers.d/$BUILD_USER > /dev/null
-            sudo chmod 440 /etc/sudoers.d/$BUILD_USER
+            printf '%s\n' \
+              '# Enforced by install script' \
+              'EnableHardwareAcceleration 1' \
+              'PhysicalDisplays 1' \
+              'EnableAutoResume 0' \
+              'DisplayManagerLogin 1' \
+              'CreateDisplay 0' \
+            | sudo tee /tmp/nxcfg.prepend > /dev/null
 
-            # ---- Function ----
-            build_aur_pkg() {
-                local PKG="$1"
-                local BUILD_DIR="/tmp/${PKG}-build"
-
-                echo "[+] Building AUR package: $PKG"
-
-                sudo rm -rf "$BUILD_DIR"
-                sudo mkdir -p "$BUILD_DIR"
-                sudo chown -R "$BUILD_USER:$BUILD_USER" "$BUILD_DIR" "$BUILD_HOME"
-
-
-                sudo -u "$BUILD_USER" bash -c "
-                  set -e
-                  cd \"$BUILD_DIR\"
-                  git clone https://aur.archlinux.org/${PKG}.git .
-                  export HOME=\"$BUILD_HOME\"
-                  makepkg -s --noconfirm --skippgpcheck
-                "
-
-                PKGFILES=$(find "$BUILD_DIR" -maxdepth 1 -name "${PKG}-*.pkg.tar.*")
-
-                if [[ -z "$PKGFILES" ]]; then
-                    echo "[-] Failed to build $PKG"
-                    exit 1
-                fi
-
-                sudo pacman -U --noconfirm $PKGFILES
-            }
-
-            # ---- Install order ----
-            build_aur_pkg yp-tools
-            build_aur_pkg anydesk-bin
-        ;;
-        "NoMachine()AUR")
-            PKG=nomachine
-            BUILD_USER=_aurbuilder
-            BUILD_HOME=/tmp/${BUILD_USER}-home
-            BUILD_DIR=/tmp/${PKG}-build
-
-            echo "[+] Installing base tools..."
-            sudo pacman -Sy --noconfirm --needed git base-devel
-
-            # ---- Build user ----
-            if ! id "$BUILD_USER" &>/dev/null; then
-                echo "[+] Creating temporary build user ($BUILD_USER)"
-                sudo useradd -r -m -d "$BUILD_HOME" -s /bin/bash "$BUILD_USER"
-            fi
-
-            # ---- Allow pacman ----
-            echo "[+] Temporarily allowing $BUILD_USER to run pacman without password..."
-            echo "$BUILD_USER ALL=(ALL) NOPASSWD: /usr/bin/pacman" \
-              | sudo tee /etc/sudoers.d/$BUILD_USER > /dev/null
-            sudo chmod 440 /etc/sudoers.d/$BUILD_USER
-
-            # ---- Build directory ----
-            sudo rm -rf "$BUILD_DIR"
-            sudo mkdir -p "$BUILD_DIR"
-            sudo chown -R "$BUILD_USER:$BUILD_USER" "$BUILD_DIR" "$BUILD_HOME"
-
-            echo "[+] Cloning AUR repo..."
-            sudo -u "$BUILD_USER" bash -c "
-                set -e
-                cd '$BUILD_DIR'
-                git clone https://aur.archlinux.org/${PKG}.git .
-            "
-
-            echo "[+] Building NoMachine..."
-            sudo -u "$BUILD_USER" bash -c "
-                set -e
-                cd '$BUILD_DIR'
-                export HOME='$BUILD_HOME'
-                makepkg -s --noconfirm
-            "
-
-            PKGFILE=$(find "$BUILD_DIR" -maxdepth 1 -type f -name "${PKG}-*.pkg.tar.*" | sort -V | tail -n1)
-            if [[ -z "$PKGFILE" ]]; then
-                echo "[-] NoMachine build failed"
-                sudo rm -f /etc/sudoers.d/$BUILD_USER
-                sudo userdel -r "$BUILD_USER" 2>/dev/null || true
-                exit 1
-            fi
-
-            echo "[+] Installing NoMachine..."
-            sudo pacman -U --noconfirm "$PKGFILE"
-
-            # ---------- Configure NoMachine ----------
-            echo "[+] Configuring NoMachine server"
-            NXCFG="/usr/NX/etc/server.cfg"
-
-            if ! grep -q '^# Enforced by install script' "$NXCFG"; then
-                sudo cp "$NXCFG" "$NXCFG.bak"
-
-                printf '%s\n' \
-                  '# Enforced by install script' \
-                  'EnableHardwareAcceleration 1' \
-                  'PhysicalDisplays 1' \
-                  'EnableAutoResume 0' \
-                  'DisplayManagerLogin 1' \
-                  'CreateDisplay 0' \
-                  '' \
-                | sudo tee /tmp/nxcfg.prepend > /dev/null
-
-                sudo cat /tmp/nxcfg.prepend "$NXCFG.bak" | sudo tee "$NXCFG" > /dev/null
-                sudo rm -f /tmp/nxcfg.prepend
-            fi
+            sudo cat /tmp/nxcfg.prepend "$NXCFG.bak" | sudo tee "$NXCFG" > /dev/null
+            sudo rm -f /tmp/nxcfg.prepend
+        fi
 
             # ---------- Qtile session ----------
             echo "[+] Installing Qtile session"
@@ -255,19 +163,16 @@ select app in "${packages[@]}"; do
               'WantedBy=multi-user.target' \
             | sudo tee /etc/systemd/system/nxserverstartup.service > /dev/null
 
-            sudo systemctl daemon-reload
-            sudo systemctl enable --now nxserver.service
-            sudo systemctl enable --now nxserverstartup.service
+        sudo systemctl daemon-reload
+        sudo systemctl enable --now nxserver.service
 
-            # ---------- Cleanup ----------
-            echo "[+] Cleaning up temporary files and user..."
-            sudo rm -rf "$BUILD_DIR" "$BUILD_HOME"
-            sudo rm -f /etc/sudoers.d/$BUILD_USER
-            sudo userdel -r "$BUILD_USER" 2>/dev/null || true
-
-            echo "✅ NoMachine installation and configuration complete"
+        cleanup_aur_builder
         ;;
-
+        "Sublime-Text(AUR)")
+        ensure_aur_builder
+        build_aur_pkg sublime-text-4
+        cleanup_aur_builder
+        ;;
         *)
             echo "Invalid choice. Please select a valid option."
             ;;
