@@ -165,6 +165,7 @@ select app in "${packages[@]}"; do
 
         sudo systemctl daemon-reload
         sudo systemctl enable --now nxserver.service
+        sudo systemctl enable --now nxserverstartup.service
 
         cleanup_aur_builder
         ;;
