@@ -1,3 +1,4 @@
+clear
 # -------------------- AUR BUILDER COMMON SETUP --------------------
 BUILD_USER=_aurbuilder
 BUILD_HOME=/tmp/${BUILD_USER}-home
