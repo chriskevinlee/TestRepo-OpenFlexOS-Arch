@@ -165,7 +165,17 @@ select app in "${packages[@]}"; do
 
         sudo systemctl daemon-reload
         sudo systemctl enable --now nxserver.service
-        sudo systemctl enable --now nxserverstartup.service
+
+	clear
+	echo "A systemd unit called nxserverstart.service has been added to allow NoMachine to use port 4000"
+	echo "If nxserverstartup.service is started and enabled, this mahcine may be visable on the network"
+	echo "If you select no you will need to either start this service with systemctl start nxserverstart"
+	echo "or run /usr/NX/bin/nxserver --startup at a terminal or tty"
+	read -p "Would you like to start and enable this service?" yn
+	
+	if [[ $yn = y ]]; then
+		sudo systemctl enable --now nxserverstartup.service
+	fi
 
         cleanup_aur_builder
         ;;
