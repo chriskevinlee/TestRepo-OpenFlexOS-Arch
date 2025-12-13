@@ -97,6 +97,12 @@ select app in "${packages[@]}"; do
         build_aur_pkg yp-tools
         build_aur_pkg anydesk-bin
         cleanup_aur_builder
+
+	read -p "Would you like to start and enable anydesk service?" yn
+	
+	if [[ $yn = y ]]; then
+		sudo systemctl enable --now anydesk
+	fi
     ;;
         "NoMachine(AUR)")
         ensure_aur_builder
