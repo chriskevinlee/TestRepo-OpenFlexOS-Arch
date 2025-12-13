@@ -64,25 +64,30 @@ select app in "${packages[@]}"; do
     case "$app" in
         "VirtualBox")
         sudo pacman -S --noconfirm virtualbox
+        clear
             ;;
         "VLC")
-                sudo pacman -S --noconfirm vlc
+        sudo pacman -S --noconfirm vlc
+        clear
             ;;
         "FileZilla")
-                sudo pacman -S --noconfirm filezilla
+        sudo pacman -S --noconfirm filezilla
         clear
             ;;
         "GIMP")
         sudo pacman -S --noconfirm gimp
+        clear
             ;;
         "Gparted")
         sudo pacman -S --noconfirm gparted
         ;;
         "KDE Connect")
         sudo pacman -S --noconfirm kdeconnect
+        clear
         ;;
         "qBittorrent")
         sudo pacman -S --noconfirm qbittorrent
+        clear
         ;;
         "Audacity")
         sudo pacman -S --noconfirm audacity
@@ -91,12 +96,14 @@ select app in "${packages[@]}"; do
         ensure_aur_builder
         build_aur_pkg brave-bin
         cleanup_aur_builder
+        clear
         ;;
         "AnyDesk(AUR)")
         ensure_aur_builder
         build_aur_pkg yp-tools
         build_aur_pkg anydesk-bin
         cleanup_aur_builder
+        clear
 
 	read -p "Would you like to start and enable anydesk service?" yn
 	
@@ -185,11 +192,13 @@ select app in "${packages[@]}"; do
 	fi
 
         cleanup_aur_builder
+        clear
         ;;
         "Sublime-Text(AUR)")
         ensure_aur_builder
         build_aur_pkg sublime-text-4
         cleanup_aur_builder
+        clear
         ;;
         *)
             echo "Invalid choice. Please select a valid option."
