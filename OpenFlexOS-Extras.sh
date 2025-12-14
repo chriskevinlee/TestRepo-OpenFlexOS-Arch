@@ -56,7 +56,7 @@ cleanup_aur_builder() {
 }
 
 
-packages=("VirtualBox" "VLC" "FileZilla" "GIMP" "Gparted" "KDE Connect" "qBittorrent" "Audacity" "Brave(AUR)" "AnyDesk(AUR)" "NoMachine(AUR)" "Sublime-Text(AUR)")
+packages=("VirtualBox" "VLC" "FileZilla" "GIMP" "Gparted" "KDE Connect" "qBittorrent" "Audacity" "Obsidian" "Brave(AUR)" "AnyDesk(AUR)" "NoMachine(AUR)" "Sublime-Text(AUR)")
 PS3="Please choose an option (1-${#packages[@]}): "
 echo "Please Choose a package to install"
 
@@ -91,7 +91,13 @@ select app in "${packages[@]}"; do
         ;;
         "Audacity")
         sudo pacman -S --noconfirm audacity
+	clear
             ;;
+        "Obsidian")
+        sudo pacman -S --noconfirm obsidian
+	clear
+            ;;
+
         "Brave(AUR)")
         ensure_aur_builder
         build_aur_pkg brave-bin
